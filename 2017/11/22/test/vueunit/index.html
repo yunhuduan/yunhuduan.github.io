@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+      
+    
+    
+      
+    
+  <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+  <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-flash.min.css" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+  
+
+<link href="https://cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="test,vue," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="缘起 目前团队中使用vue开发有一段时间了,但是对于通用组件也好业务组件也罢,总感觉在质量上心里有点不放心或者说从近期几个项目来看在测试阶段还是有很多没必要的bug提出来.于是乎有点闲暇时间来研究下vue的单元测试了,vue的脚手架生成工具其实已经内置了单元测试和端到端的测试.我们先从单元测试一步步来最后再到端到端的测">
+<meta name="keywords" content="test,vue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue单元测试(1)">
+<meta property="og:url" content="http://yunhuduan.github.io/2017/11/22/test/vueunit/index.html">
+<meta property="og:site_name" content="yohance">
+<meta property="og:description" content="缘起 目前团队中使用vue开发有一段时间了,但是对于通用组件也好业务组件也罢,总感觉在质量上心里有点不放心或者说从近期几个项目来看在测试阶段还是有很多没必要的bug提出来.于是乎有点闲暇时间来研究下vue的单元测试了,vue的脚手架生成工具其实已经内置了单元测试和端到端的测试.我们先从单元测试一步步来最后再到端到端的测试,毕竟技术比较关心的还是单元测试.对于vue的单元测试目前比较推荐的还是使用官">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-22T13:17:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vue单元测试(1)">
+<meta name="twitter:description" content="缘起 目前团队中使用vue开发有一段时间了,但是对于通用组件也好业务组件也罢,总感觉在质量上心里有点不放心或者说从近期几个项目来看在测试阶段还是有很多没必要的bug提出来.于是乎有点闲暇时间来研究下vue的单元测试了,vue的脚手架生成工具其实已经内置了单元测试和端到端的测试.我们先从单元测试一步步来最后再到端到端的测试,毕竟技术比较关心的还是单元测试.对于vue的单元测试目前比较推荐的还是使用官">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yunhuduan.github.io/2017/11/22/test/vueunit/"/>
+
+
+
+
+
+  <title>vue单元测试(1) | yohance</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fb5924bd01171df0e8f85aec21c4f95f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yohance</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description"></h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yunhuduan.github.io/2017/11/22/test/vueunit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="花生米">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/head-img.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yohance">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">vue单元测试(1)</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-22T23:08:22+08:00">
+                2017-11-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/test/" itemprop="url" rel="index">
+                    <span itemprop="name">test</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/test/vue/" itemprop="url" rel="index">
+                    <span itemprop="name">vue</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/11/22/test/vueunit/" class="leancloud_visitors" data-flag-title="vue单元测试(1)">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h2><blockquote>
+<p>目前团队中使用vue开发有一段时间了,但是对于通用组件也好业务组件也罢,总感觉在质量上心里有点不放心或者说从近期几个项目来看在测试阶段还是有很多没必要的bug提出来.<br>于是乎有点闲暇时间来研究下vue的单元测试了,vue的脚手架生成工具其实已经内置了单元测试和端到端的测试.我们先从单元测试一步步来最后再到端到端的测试,<br>毕竟技术比较关心的还是单元测试.对于vue的单元测试目前比较推荐的还是使用官方的测试工具:<a href="https://vue-test-utils.vuejs.org/zh-cn/" target="_blank" rel="noopener">vue-test-utils</a>,当然还有其他的一些测试工具或者库您可以到<a href="https://curated.vuejs.org/" target="_blank" rel="noopener">这里</a>去搜索.<br>下面我们来新建一个项目来一步步编写单元测试</p>
+</blockquote>
+<h2 id="vue脚手架生成项目"><a href="#vue脚手架生成项目" class="headerlink" title="vue脚手架生成项目"></a>vue脚手架生成项目</h2><p>运行命令:<code>vue init webpack vuetest</code><br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> A newer version of vue-cli is available.</span><br><span class="line"></span><br><span class="line">  latest:    2.9.1</span><br><span class="line">  installed: 2.8.2</span><br><span class="line"></span><br><span class="line">? Project name vuetest</span><br><span class="line">? Project description A Vue.js project</span><br><span class="line">? Author yohance <span class="tag">&lt;<span class="name">xxxxxx@sina.cn</span>&gt;</span></span><br><span class="line">? Vue build standalone</span><br><span class="line">? Install vue-router? Yes</span><br><span class="line">? Use ESLint to lint your code? Yes</span><br><span class="line">? Pick an ESLint preset Standard</span><br><span class="line">? Setup unit tests Yes</span><br><span class="line">? Pick a test runner karma</span><br><span class="line">? Setup e2e tests with Nightwatch? No</span><br><span class="line"></span><br><span class="line">   vue-cli · Generated "vuetest".</span><br><span class="line"></span><br><span class="line">   To get started:</span><br><span class="line">   </span><br><span class="line">     cd vuetest1</span><br><span class="line">     npm install</span><br><span class="line">     npm run dev</span><br><span class="line">   </span><br><span class="line">   Documentation can be found at https://vuejs-templates.github.io/webpack</span><br></pre></td></tr></table></figure></p>
+<p>以上就是我们运行vue脚手架后的选项设置下面我们接着开始写个vue官方的TodoList</p>
+<a id="more"></a>
+<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install </span><br><span class="line">npm install --save-dev vue-test-utils</span><br></pre></td></tr></table></figure>
+<h2 id="eslint规则修改"><a href="#eslint规则修改" class="headerlink" title="eslint规则修改"></a>eslint规则修改</h2><p>添加如下规则到项目根目录下的.eslintrc.js,根据个人习惯这步骤可以自行处理决定自己的规则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 通用空格一致</span><br><span class="line">&apos;comma-spacing&apos;: 0,</span><br><span class="line">//方法前空格允许</span><br><span class="line">&apos;space-before-function-paren&apos;: 0,</span><br><span class="line">// 限制使用单引号,</span><br><span class="line">&apos;quotes&apos;: 0,</span><br><span class="line">//不允许行尾有空格</span><br><span class="line">&apos;no-trailing-spaces&apos;: 0,</span><br><span class="line"></span><br><span class="line">&quot;no-unused-vars&quot;: 0,</span><br><span class="line">// 关闭语句强制分号结尾</span><br><span class="line">&quot;semi&quot;: [0],</span><br><span class="line">//空行最多不能超过100行</span><br><span class="line">&quot;no-multiple-empty-lines&quot;: [0, &#123;&quot;max&quot;: 100&#125;],</span><br><span class="line">//关闭禁止混用tab和空格</span><br><span class="line">&quot;no-mixed-spaces-and-tabs&quot;: [0],</span><br><span class="line">&quot;no-tabs&quot;: 0,</span><br><span class="line">&quot;indent&quot;: [&quot;error&quot;, &quot;tab&quot;],</span><br><span class="line">//注释空格</span><br><span class="line">&quot;spaced-comment&quot;: 0,</span><br><span class="line">//判断无等号</span><br><span class="line">&quot;padded-blocks&quot;: 0,</span><br><span class="line">&apos;no-useless-escape&apos;:0,</span><br><span class="line">//禁止使用new Function</span><br><span class="line">&quot;no-new-func&quot;: 0</span><br></pre></td></tr></table></figure></p>
+<h2 id="TodoList组件编写"><a href="#TodoList组件编写" class="headerlink" title="TodoList组件编写"></a>TodoList组件编写</h2><h3 id="基本组件列表如下"><a href="#基本组件列表如下" class="headerlink" title="基本组件列表如下:"></a>基本组件列表如下:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">|- src</span><br><span class="line">    |- components</span><br><span class="line">        |- Todo.vue</span><br><span class="line">        |- TodoList.vue</span><br><span class="line">        |- TodoItem.vue</span><br></pre></td></tr></table></figure>
+<h3 id="组件及测试代码如下"><a href="#组件及测试代码如下" class="headerlink" title="组件及测试代码如下:"></a>组件及测试代码如下:</h3><h4 id="TodoItem-vue组件"><a href="#TodoItem-vue组件" class="headerlink" title="TodoItem.vue组件"></a>TodoItem.vue组件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">	&lt;div class=&quot;todo-item&quot;&gt;</span><br><span class="line">		&lt;p&gt;</span><br><span class="line">			&lt;span class=&quot;index-class&quot;&gt;&#123;&#123;idx&#125;&#125;&lt;/span&gt;</span><br><span class="line">			&lt;span class=&quot;item-ctx&quot;&gt;&#123;&#123;data&#125;&#125;&lt;/span&gt;</span><br><span class="line">			&lt;a class=&quot;item-op&quot; href=&quot;javascript:void(0);&quot; @click=&quot;del(idx)&quot;&gt;done&lt;/a&gt;</span><br><span class="line">		&lt;/p&gt;</span><br><span class="line">	&lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">	export default &#123;</span><br><span class="line">		props: &#123;</span><br><span class="line">			data: &#123;</span><br><span class="line">				type: String,</span><br><span class="line">				required: true</span><br><span class="line">			&#125;,</span><br><span class="line">			idx: &#123;</span><br><span class="line">				type: Number,</span><br><span class="line">				required: true</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		data() &#123;</span><br><span class="line">			return &#123;&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		methods: &#123;</span><br><span class="line">			del: function (index) &#123;</span><br><span class="line">				console.log(&apos;item del&apos;)</span><br><span class="line">				this.$emit(&apos;delItem&apos;, index)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Add &quot;scoped&quot; attribute to limit CSS to this component only --&gt;</span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">	.todo-item &#123;</span><br><span class="line">		margin-bottom: 5px;</span><br><span class="line">		border: 1px solid #ff3445;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	.item-op &#123;</span><br><span class="line">		margin-left: 5px;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="TodoItem-vue测试用例"><a href="#TodoItem-vue测试用例" class="headerlink" title="TodoItem.vue测试用例"></a>TodoItem.vue测试用例</h4><p>在test/unit/specs 目录下新建文件TodoItem.spec.js内容如下:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> TodoItem <span class="keyword">from</span> <span class="string">'@/components/TodoItem'</span></span><br><span class="line"><span class="keyword">import</span> &#123;shallow&#125; <span class="keyword">from</span> <span class="string">'vue-test-utils'</span></span><br><span class="line"><span class="comment">//eslint 默认开启无用表达式检测避免eslint出错提示</span></span><br><span class="line"><span class="comment">/*eslint no-unused-expressions: [0]*/</span></span><br><span class="line"><span class="keyword">const</span> clickHandler = sinon.stub();</span><br><span class="line">describe(<span class="string">'TodoItem.vue'</span>, () =&gt; &#123;</span><br><span class="line">	it(<span class="string">'should render correct contents'</span>, () =&gt; &#123;</span><br><span class="line">		<span class="keyword">var</span> text = <span class="string">'bar'</span>;</span><br><span class="line">		<span class="keyword">var</span> index = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">const</span> wrapper = shallow(TodoItem, &#123;</span><br><span class="line">			propsData: &#123;</span><br><span class="line">				data: text,</span><br><span class="line">				idx: index</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;)</span><br><span class="line">		expect(wrapper.find(<span class="string">'.index-class'</span>).text()).to.equal(index + <span class="string">''</span>)</span><br><span class="line">		expect(wrapper.find(<span class="string">'.item-ctx'</span>).text()).to.equal(text)</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	it(<span class="string">'should trigger event invoke correct'</span>, () =&gt; &#123;</span><br><span class="line">		<span class="keyword">var</span> text = <span class="string">'bar'</span>;</span><br><span class="line">		<span class="keyword">var</span> index = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">const</span> wrapper = shallow(TodoItem, &#123;</span><br><span class="line">			propsData: &#123;</span><br><span class="line">				data: text,</span><br><span class="line">				idx: index</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;)</span><br><span class="line">		<span class="comment">//需要找到操作按钮a标签触发点击事件</span></span><br><span class="line">		wrapper.find(<span class="string">'.item-op'</span>).trigger(<span class="string">'click'</span>);</span><br><span class="line">		<span class="comment">//wrapper.emitted().delItem : [[0]]</span></span><br><span class="line">		expect(wrapper.emitted().delItem.length).to.equal(<span class="number">1</span>);</span><br><span class="line">		expect(wrapper.emitted().delItem).to.deep.equal([[<span class="number">0</span>]]);</span><br><span class="line">		expect(wrapper.emitted().delItem[<span class="number">0</span>]).to.deep.equal([index]);</span><br><span class="line"></span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>运行命令: <code>npm run unit</code> 查看当前测试用例运行结果,如果是在webstorm中编写可直接在测试用例的describe位置点击<code>Run &#39;TodoItem.vue&#39;</code><br>ide会自动执行当前karma命令</p>
+<h4 id="TodoList-vue组件"><a href="#TodoList-vue组件" class="headerlink" title="TodoList.vue组件"></a>TodoList.vue组件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">	&lt;div class=&quot;todo-list&quot;&gt;</span><br><span class="line">		&lt;TodoItem v-for=&quot;(item, index) in items&quot; :key=&quot;index&quot; :data=&quot;item&quot; :idx=&quot;index&quot; @delItem=&quot;del&quot;&gt;&lt;/TodoItem&gt;</span><br><span class="line">		&lt;p class=&quot;no-data&quot; v-if=&quot;items.length &lt;= 0&quot;&gt;请输入项目&lt;/p&gt;</span><br><span class="line">	&lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">	import TodoItem from &apos;./TodoItem.vue&apos;</span><br><span class="line"></span><br><span class="line">	export default &#123;</span><br><span class="line">		name: &apos;todoList&apos;,</span><br><span class="line">		props: &#123;</span><br><span class="line">			items: &#123;</span><br><span class="line">				type: Array,</span><br><span class="line">				default: []</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		data() &#123;</span><br><span class="line">			return &#123;&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		methods: &#123;</span><br><span class="line">			del: function (index) &#123;</span><br><span class="line">				this.$emit(&apos;delItem&apos;,index)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		components: &#123;TodoItem&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Add &quot;scoped&quot; attribute to limit CSS to this component only --&gt;</span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line">	.todo-list &#123;</span><br><span class="line">		border: 1px solid #ffdf1a;</span><br><span class="line">		padding: 5px;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="TodoList测试用例"><a href="#TodoList测试用例" class="headerlink" title="TodoList测试用例"></a>TodoList测试用例</h4><p>新建文件test/unit/specs/TodoList.spec.js,内容如下:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> TodoList <span class="keyword">from</span> <span class="string">'@/components/TodoList'</span></span><br><span class="line"><span class="keyword">import</span> TodoItem <span class="keyword">from</span> <span class="string">'@/components/TodoItem'</span></span><br><span class="line"><span class="keyword">import</span> &#123;mount&#125; <span class="keyword">from</span> <span class="string">'vue-test-utils'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//eslint 默认开启无用表达式检测避免eslint出错提示</span></span><br><span class="line"><span class="comment">/*eslint no-unused-expressions: [0]*/</span></span><br><span class="line"></span><br><span class="line">describe(<span class="string">'TodoList.vue'</span>, () =&gt; &#123;</span><br><span class="line">	it(<span class="string">'should render correct contents'</span>, () =&gt; &#123;</span><br><span class="line">		<span class="keyword">var</span> items = [<span class="string">'Apple'</span>, <span class="string">'Banana'</span>, <span class="string">'Orange'</span>]</span><br><span class="line">		<span class="keyword">const</span> wrapper = mount(TodoList, &#123;</span><br><span class="line">			propsData: &#123;</span><br><span class="line">				items: items</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);</span><br><span class="line">		expect(wrapper.findAll(<span class="string">'.todo-item'</span>).length).to.equal(items.length)</span><br><span class="line">		expect(wrapper.contains(TodoItem)).to.be.true;</span><br><span class="line">	&#125;)</span><br><span class="line">	it(<span class="string">'should render correct with empty items contents'</span>, () =&gt; &#123;</span><br><span class="line">		<span class="keyword">var</span> items = []</span><br><span class="line">		<span class="keyword">const</span> wrapper = mount(TodoList, &#123;</span><br><span class="line">			propsData: &#123;</span><br><span class="line">				items: items</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);</span><br><span class="line">		expect(wrapper.findAll(<span class="string">'.todo-item'</span>).length).to.equal(items.length);</span><br><span class="line">		expect(wrapper.contains(TodoItem)).to.be.false;</span><br><span class="line">		expect(wrapper.findAll(<span class="string">'.no-data'</span>).length).to.equal(<span class="number">1</span>)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>运行命令: <code>npm run unit</code>查看运行测试用例结果</p>
+<h4 id="Todo-vue组件"><a href="#Todo-vue组件" class="headerlink" title="Todo.vue组件"></a>Todo.vue组件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">	&lt;div class=&quot;todo&quot;&gt;</span><br><span class="line">		&lt;div class=&quot;add-item-container&quot;&gt;</span><br><span class="line">			&lt;input v-model=&quot;inputItem&quot; @keyup.enter=&quot;addItem&quot; id=&quot;itemInput&quot;/&gt;</span><br><span class="line">		&lt;/div&gt;</span><br><span class="line">		&lt;div class=&quot;item-list-container&quot;&gt;</span><br><span class="line">			&lt;TodoList @delItem=&quot;delItem&quot; :items=&quot;itemList&quot;&gt;&lt;/TodoList&gt;</span><br><span class="line">		&lt;/div&gt;</span><br><span class="line">	&lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">	import TodoList from &apos;./TodoList.vue&apos;</span><br><span class="line"></span><br><span class="line">	export default &#123;</span><br><span class="line">		data() &#123;</span><br><span class="line">			return &#123;</span><br><span class="line">				inputItem: &apos;&apos;,</span><br><span class="line">				itemList: []</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		methods: &#123;</span><br><span class="line">			addItem: function () &#123;</span><br><span class="line">				this.itemList.push(this.inputItem)</span><br><span class="line">			&#125;,</span><br><span class="line">			delItem: function (index) &#123;</span><br><span class="line">				console.log(&apos;todo del item:&apos; + index);</span><br><span class="line">				this.itemList.splice(index, 1);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		components: &#123;TodoList&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- Add &quot;scoped&quot; attribute to limit CSS to this component only --&gt;</span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="Todo测试用例"><a href="#Todo测试用例" class="headerlink" title="Todo测试用例"></a>Todo测试用例</h4><p>新建文件test/unit/specs/Todo.spec.js<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> TodoList <span class="keyword">from</span> <span class="string">'@/components/TodoList'</span></span><br><span class="line"><span class="keyword">import</span> Todo <span class="keyword">from</span> <span class="string">'@/components/Todo'</span></span><br><span class="line"><span class="keyword">import</span> &#123;mount&#125; <span class="keyword">from</span> <span class="string">'vue-test-utils'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//eslint 默认开启无用表达式检测避免eslint出错提示</span></span><br><span class="line"><span class="comment">/*eslint no-unused-expressions: [0]*/</span></span><br><span class="line"></span><br><span class="line">describe(<span class="string">'Todo.vue'</span>, () =&gt; &#123;</span><br><span class="line">	it(<span class="string">'should render correct contents'</span>, () =&gt; &#123;</span><br><span class="line">		<span class="keyword">var</span> items = [<span class="string">'Apple'</span>, <span class="string">'Banana'</span>, <span class="string">'Orange'</span>]</span><br><span class="line">		<span class="keyword">const</span> wrapper = mount(Todo);</span><br><span class="line">		wrapper.setData(&#123;<span class="attr">itemList</span>: items&#125;)</span><br><span class="line"></span><br><span class="line">		expect(wrapper.findAll(<span class="string">'.todo-item'</span>).length).to.equal(items.length)</span><br><span class="line"></span><br><span class="line">		expect(wrapper.contains(TodoList)).to.be.true;</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	it(<span class="string">'should input text correct'</span>, () =&gt; &#123;</span><br><span class="line">		<span class="keyword">const</span> wrapper = mount(Todo);</span><br><span class="line">		<span class="keyword">var</span> item = <span class="string">'Apple'</span>;</span><br><span class="line">		<span class="keyword">var</span> input = wrapper.find(<span class="string">'#itemInput'</span>);</span><br><span class="line">		wrapper.vm.inputItem = item;</span><br><span class="line">		input.trigger(<span class="string">'keyup.enter'</span>);</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'itemList:'</span> + wrapper.vm.itemList + <span class="string">',length:'</span> + wrapper.vm.itemList.length);</span><br><span class="line">		expect(wrapper.vm.itemList).to.deep.equal([item]);</span><br><span class="line"></span><br><span class="line">	&#125;)</span><br><span class="line">	it(<span class="string">'should del item correct'</span>, () =&gt; &#123;</span><br><span class="line">		<span class="keyword">const</span> wrapper = mount(Todo);</span><br><span class="line">		<span class="keyword">var</span> items = [<span class="string">'Apple'</span>, <span class="string">'Banana'</span>];</span><br><span class="line">		wrapper.setData(&#123;</span><br><span class="line">			itemList: items</span><br><span class="line">		&#125;)</span><br><span class="line"></span><br><span class="line">		expect(wrapper.vm.itemList.length).to.be.equal(items.length)</span><br><span class="line"></span><br><span class="line">		<span class="comment">//find 组件时被find的组件(TodoList)必须是要声明组件  name属性的</span></span><br><span class="line">		wrapper.find(TodoList).vm.$emit(<span class="string">'delItem'</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">		expect(wrapper.vm.itemList.length).to.be.equal(<span class="number">1</span>)</span><br><span class="line">		expect(wrapper.vm.itemList).to.deep.equal([<span class="string">'Banana'</span>])</span><br><span class="line"></span><br><span class="line">	&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>运行命令: <code>npm run unit</code>查看运行测试用例结果</p>
+<p>4.在router中添加路由<br>在router/index.js中添加/todo的路由如下代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import Vue from &apos;vue&apos;</span><br><span class="line">import Router from &apos;vue-router&apos;</span><br><span class="line">import HelloWorld from &apos;@/components/HelloWorld&apos;</span><br><span class="line">import Todo from &apos;@/components/Todo&apos;</span><br><span class="line"></span><br><span class="line">Vue.use(Router)</span><br><span class="line"></span><br><span class="line">export default new Router(&#123;</span><br><span class="line">	routes: [</span><br><span class="line">		&#123;</span><br><span class="line">			path: &apos;/&apos;,</span><br><span class="line">			name: &apos;HelloWorld&apos;,</span><br><span class="line">			component: HelloWorld</span><br><span class="line">		&#125;,</span><br><span class="line">		&#123;</span><br><span class="line">			path: &apos;/todo&apos;,</span><br><span class="line">			name: &apos;todo&apos;,</span><br><span class="line">			component: Todo</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="运行demo"><a href="#运行demo" class="headerlink" title="运行demo"></a>运行demo</h3><ol>
+<li>运行命令: <code>npm run dev</code> </li>
+<li>打开浏览器输入: <a href="http://localhost:8080/todo" target="_blank" rel="noopener">http://localhost:8080/todo</a> ,查看当前demo运行结果</li>
+</ol>
+<p>本文的代码在github<a href="https://github.com/yunhuduan/vuetest" target="_blank" rel="noopener">这里</a><br>更多关于vue的测试以后再深入,后期逐步引入 vue-router,vuex,sinon等进行测试简单的测试到目前为止</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享,谢谢您的鼓励!</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechat-reward.jpeg" alt="花生米 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/test/" rel="tag"># test</a>
+          
+            <a href="/tags/vue/" rel="tag"># vue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/08/front-frameworks/mochabase/" rel="next" title="测试框架-mocha入门(1)">
+                <i class="fa fa-chevron-left"></i> 测试框架-mocha入门(1)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/15/node/koa2-start/" rel="prev" title="koa2入门">
+                koa2入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/head-img.jpeg"
+                alt="花生米" />
+            
+              <p class="site-author-name" itemprop="name">花生米</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/yunhuduan" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://weibo.com/u/2181859722" target="_blank" title="微博">
+                    
+                      <i class="fa fa-fw fa-globe"></i>微博</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#缘起"><span class="nav-number">1.</span> <span class="nav-text">缘起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vue脚手架生成项目"><span class="nav-number">2.</span> <span class="nav-text">vue脚手架生成项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装依赖"><span class="nav-number">3.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eslint规则修改"><span class="nav-number">4.</span> <span class="nav-text">eslint规则修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TodoList组件编写"><span class="nav-number">5.</span> <span class="nav-text">TodoList组件编写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本组件列表如下"><span class="nav-number">5.1.</span> <span class="nav-text">基本组件列表如下:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组件及测试代码如下"><span class="nav-number">5.2.</span> <span class="nav-text">组件及测试代码如下:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TodoItem-vue组件"><span class="nav-number">5.2.1.</span> <span class="nav-text">TodoItem.vue组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TodoItem-vue测试用例"><span class="nav-number">5.2.2.</span> <span class="nav-text">TodoItem.vue测试用例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TodoList-vue组件"><span class="nav-number">5.2.3.</span> <span class="nav-text">TodoList.vue组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TodoList测试用例"><span class="nav-number">5.2.4.</span> <span class="nav-text">TodoList测试用例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Todo-vue组件"><span class="nav-number">5.2.5.</span> <span class="nav-text">Todo.vue组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Todo测试用例"><span class="nav-number">5.2.6.</span> <span class="nav-text">Todo测试用例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行demo"><span class="nav-number">5.3.</span> <span class="nav-text">运行demo</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">花生米</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由花生米倾情打造</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  <script type="text/javascript" src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="https://cdn.bootcss.com/velocity/1.2.1/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="https://cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+  
+  <script type="text/javascript" src="https://cdn.bootcss.com/three.js/r83/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("GESf6oVUhw2b6nBqeOsceWFr-gzGzoHsz", "jD7MdlDYe4uYFa8qgblbUT0n");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
