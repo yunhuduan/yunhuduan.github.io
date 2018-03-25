@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="yohance">
 <meta property="og:description" content="简介loader 用于对模块的源代码进行转换。loader 可以使你在 import 或”加载”模块时预处理文件。因此，loader 类似于其他构建工具中“任务(task)”，并提供了处理前端构建步骤的强大方法。loader 可以将文件从不同的语言（如 TypeScript）转换为 JavaScript，或将内联图像转换为 data URL。loader 甚至允许你直接在 JavaScript 模">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-22T15:03:24.000Z">
+<meta property="og:updated_time" content="2018-03-25T02:33:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="webpack3.x入门(3)-loader使用">
 <meta name="twitter:description" content="简介loader 用于对模块的源代码进行转换。loader 可以使你在 import 或”加载”模块时预处理文件。因此，loader 类似于其他构建工具中“任务(task)”，并提供了处理前端构建步骤的强大方法。loader 可以将文件从不同的语言（如 TypeScript）转换为 JavaScript，或将内联图像转换为 data URL。loader 甚至允许你直接在 JavaScript 模">
@@ -408,9 +408,16 @@
 </ul>
 <a id="more"></a>
 <h2 id="loader执行顺序"><a href="#loader执行顺序" class="headerlink" title="loader执行顺序"></a>loader执行顺序</h2><p>1.在rules中的一条规则中如果use使用多个loader,顺序<strong>自右向左</strong>执行;<br>2.在整个rules数组中执行顺序<strong>自下而上</strong></p>
-<h2 id="loader配置事例"><a href="#loader配置事例" class="headerlink" title="loader配置事例"></a>loader配置事例</h2><p>我们还是使用webpack-demo中simple目录下代码演示,先安装style-loader,css-loader<br>在app.js中修改如下:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'./css/index.css'</span><span class="comment">//添加引入css</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="built_in">document</span>.createElement(<span class="string">'p'</span>);</span><br><span class="line">p.innerHTML = <span class="string">"hello webpack"</span>;</span><br><span class="line">p.setAttribute(<span class="string">"id"</span>, <span class="string">"test"</span>);</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(p);</span><br></pre></td></tr></table></figure></p>
+<h2 id="loader配置事例"><a href="#loader配置事例" class="headerlink" title="loader配置事例"></a>loader配置事例</h2><h3 id="css-loader-amp-style-loader"><a href="#css-loader-amp-style-loader" class="headerlink" title="css-loader&amp;style-loader"></a>css-loader&amp;style-loader</h3><p>我们还是使用webpack-demo中simple目录下代码演示,先安装style-loader,css-loader</p>
+<p>css/index.css代码如下:<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: gray;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#test</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#333333</span>;</span><br><span class="line">    <span class="attribute">font-style</span>: italic;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在app.js中修改如下:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'./css/index.css'</span><span class="comment">//添加引入css</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> testFunc = <span class="function">(<span class="params">str1, str2</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> str1 + <span class="string">','</span> + str2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> p = <span class="built_in">document</span>.createElement(<span class="string">'p'</span>);</span><br><span class="line">p.innerHTML = <span class="string">"hello webpack,"</span> + testFunc(<span class="string">'p1'</span>,<span class="string">'p2'</span>);</span><br><span class="line">p.setAttribute(<span class="string">"id"</span>, <span class="string">"test"</span>);</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(p);</span><br></pre></td></tr></table></figure></p>
 <p>修改webpack.config.js如下:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>);</span><br><span class="line"><span class="keyword">const</span> HtmlWebpackPlugin = <span class="built_in">require</span>(<span class="string">'html-webpack-plugin'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在根目录下执行命令 ../node_modules/.bin/webpack</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">	entry: &#123;</span><br><span class="line">		app: <span class="string">"./app.js"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	output: &#123;</span><br><span class="line">		path: path.resolve(__dirname, <span class="string">"dist"</span>),</span><br><span class="line">		filename: <span class="string">"[name].js"</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="built_in">module</span>: &#123;</span><br><span class="line">		rules: [</span><br><span class="line">			&#123;<span class="attr">test</span>: <span class="regexp">/\.css$/</span>, <span class="attr">use</span>: [<span class="string">'style-loader'</span>,<span class="string">'css-loader'</span>]&#125;</span><br><span class="line">		]</span><br><span class="line">	&#125;,</span><br><span class="line">	plugins: [</span><br><span class="line">		<span class="keyword">new</span> HtmlWebpackPlugin()</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>然后我们运行命令:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> simple</span><br><span class="line">../node_modules/.bin/webpack</span><br></pre></td></tr></table></figure></p>
+<p>打开simple/dist目录下的index.html文件可以看到背景颜色变了id为test的p标签样式也正确,然后再控制台的element中查看元素head<br>中存在style的内容正是index.css中内容;<br>css-loader:将css文件中的import或者url等抓换成base64或者合并导入文件<br>style-loader:将css内容写入到html的头部</p>
+<h3 id="babel-loader"><a href="#babel-loader" class="headerlink" title="babel-loader"></a>babel-loader</h3><p>由上面的事例我们看到我们打包完成的js中还是es6的语法,我们需要使用另外一个loader来将es6转换成es5,安装babel-loader,babel-core,babel-preset-env</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -D babel-loader babel-core babel-preset-env</span><br></pre></td></tr></table></figure>
+<p>在webpack.config.js中的rules中添加如下loader配置:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">	exclude: <span class="regexp">/(node_modules|bower_components)/</span>,</span><br><span class="line">	use: &#123;</span><br><span class="line">		loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">		options: &#123;</span><br><span class="line">			presets: [<span class="string">'env'</span>]</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后再执行命令查看dist目录下的app.js中的代码是否已经是es5</p>
 
       
     </div>
@@ -465,8 +472,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/10/tools/webpack-baseusage/" rel="next" title="webpack3.x入门(2)-基本使用">
-                <i class="fa fa-chevron-left"></i> webpack3.x入门(2)-基本使用
+              <a href="/2018/03/08/tools/post-css-introduction/" rel="next" title="postcss入门-介绍(1)">
+                <i class="fa fa-chevron-left"></i> postcss入门-介绍(1)
               </a>
             
           </div>
@@ -475,8 +482,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/10/tools/webpack-mutilpage/" rel="prev" title="webpack-mutilpage">
-                webpack-mutilpage <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/10/tools/webpack-baseusage/" rel="prev" title="webpack3.x入门(2)-基本使用">
+                webpack3.x入门(2)-基本使用 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -556,7 +563,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -627,7 +634,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用loader方式"><span class="nav-number">2.</span> <span class="nav-text">使用loader方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loader执行顺序"><span class="nav-number">3.</span> <span class="nav-text">loader执行顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loader配置事例"><span class="nav-number">4.</span> <span class="nav-text">loader配置事例</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用loader方式"><span class="nav-number">2.</span> <span class="nav-text">使用loader方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loader执行顺序"><span class="nav-number">3.</span> <span class="nav-text">loader执行顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loader配置事例"><span class="nav-number">4.</span> <span class="nav-text">loader配置事例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#css-loader-amp-style-loader"><span class="nav-number">4.1.</span> <span class="nav-text">css-loader&style-loader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#babel-loader"><span class="nav-number">4.2.</span> <span class="nav-text">babel-loader</span></a></li></ol></li></ol></div>
             
 
           </div>
